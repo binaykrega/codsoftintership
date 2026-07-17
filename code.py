@@ -1,63 +1,131 @@
 import time
 import random
 
-now = time.strftime("%Y-%m-%d %H:%M:%S")
+print("Start small. Stay motivated.")
+
+# List of interesting facts
 interesting_facts = [
-    "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still edible.",
-    "Octopuses have three hearts. Two pump blood to the gills, while one pumps it to the rest of the body.",
-    "Bananas are berries, but strawberries aren't.",
-    "A day on Venus is longer than a year on Venus."
+    "The human body contains 206 bones.",
+    "Mount Everest grows by about 4 millimeters every year.",
+    "The first email was sent in 1971.",
+    "The Moon has moonquakes, similar to earthquakes on Earth.",
+    "A day on Mercury is longer than its year."
 ]
 
+# List of jokes
+jokes = [
+    "Why did the scarecrow win an award? Because he was outstanding in his field!",
+    "Why don't programmers like nature? It has too many bugs!",
+    "Why was the computer cold? Because it left its Windows open!"
+]
+
+# Memory
+memory = {
+    "waiting_for_name": False
+}
+
 def chatbot(user_input, memory):
-    user_input = user_input.lower()
+    user_input = user_input.strip()
+    lower_input = user_input.lower()
 
-    if "hi" in user_input or "hello" in user_input:
+    # Greeting
+    if lower_input in ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"]:
+        if "name" in memory:
+            return f"Hello again, {memory['name']}! How can I help you today?"
+        memory["waiting_for_name"] = True
         return "Hi there! I'm a chatbot here to assist you. What's your name?"
-    elif "my name is" in user_input:
-        name = user_input.split("my name is")[-1].strip()
-        memory['name'] = name
+
+    # Waiting for user's name
+    elif memory.get("waiting_for_name"):
+        if user_input.replace(" ", "").isalpha():
+            name = user_input.title()
+            memory["name"] = name
+            memory["waiting_for_name"] = False
+            return f"Nice to meet you, {name}!"
+        else:
+            return "Please enter only your name."
+
+    # User says "My name is..."
+    elif "my name is" in lower_input:
+        name = user_input.split("my name is", 1)[1].strip().title()
+        memory["name"] = name
         return f"Nice to meet you, {name}!"
-    elif "what is your name" in user_input:
-        return "I'm just a chatbot, so I don't have a name, but you can call me anything."
-    elif "where are you from" in user_input:
+
+    elif "what is my name" in lower_input:
+        if "name" in memory:
+            return f"Your name is {memory['name']}."
+        return "I don't know your name yet."
+
+    elif "what is your name" in lower_input:
+        return "I'm a simple Python chatbot."
+
+    elif "where are you from" in lower_input:
         return "I'm from the digital world, always ready to chat!"
-    elif "how are you" in user_input:
-        return "I'm fine. How about you?"
-    elif "do you have any hobbies" in user_input or "interests" in user_input:
-        return "I'm always busy helping users, so my hobby is chatting with people like you!"
-    elif "what did you eat today" in user_input or "what do you like to eat" in user_input:
-        return "I don't eat, but I can help you find delicious recipes and food-related information."
-    elif "favorite color" in user_input:
-        return "I'm a chatbot, so I don't have personal preferences for colors."
-    elif "do you enjoy listening to music" in user_input:
-        return "I can't listen to music, but I'm here to chat about it!"
-    elif "tell me a joke" in user_input or "another joke" in user_input:
-        return "Why did the scarecrow win an award? Because he was outstanding in his field!"
-    elif "tell me an interesting fact" in user_input:
+
+    elif "how are you" in lower_input:
+        return "I'm doing great! Thanks for asking."
+
+    elif "hobbies" in lower_input or "interests" in lower_input:
+        return "Helping users is my favorite hobby."
+
+    elif "eat" in lower_input or "food" in lower_input:
+        return "I don't eat, but I can help you find delicious recipes."
+
+    elif "favorite color" in lower_input or "favourite colour" in lower_input or "favourite color" in lower_input:
+        return "I don't have a favorite color."
+
+    elif "music" in lower_input:
+        return "I can't listen to music, but I enjoy talking about it."
+
+    elif "joke" in lower_input:
+        return random.choice(jokes)
+
+    elif "fact" in lower_input:
         return random.choice(interesting_facts)
-    elif "weather in" in user_input:
-        return "I can help you with weather information soon. Stay tuned for updates!"
-    elif "latest news" in user_input:
-        return "I can help you with the latest news soon. Stay tuned for updates!"
-    elif "translate" in user_input:
-        return "I can help you with translations soon. Stay tuned for updates!"
-    elif "what is the time now" in user_input:
-        return now
-    elif "bye" in user_input:
-        return f"Goodbye, {memory.get('name', 'friend')}! Take care and have a great day!"
+
+    elif "weather" in lower_input:
+        return "I can't provide live weather updates yet. Please check a weather website or app."
+
+    elif "news" in lower_input:
+        return "I can't provide the latest news yet. Please visit a trusted news website."
+
+    elif "translate" in lower_input:
+        return "Translation support will be added in a future version."
+
+    elif "time" in lower_input:
+        return time.strftime("Current time: %H:%M:%S")
+
+    elif "date" in lower_input:
+        return time.strftime("Today's date: %d-%m-%Y")
+
+    elif "thank" in lower_input:
+        return "You're welcome! Happy to help."
+
+    elif lower_input in ["bye", "exit", "quit"]:
+        return f"Goodbye, {memory.get('name', 'friend')}! Have a wonderful day."
+
     else:
-        return "I'm sorry, I didn't understand that. Can you please rephrase your sentence?"
+        return ("Sorry, I didn't understand that.\n"
+                "You can ask me about:\n"
+                "- Time\n"
+                "- Date\n"
+                "- Jokes\n"
+                "- Interesting facts\n"
+                "- My name\n"
+                "- Your name\n"
+                "- Weather\n"
+                "- News\n"
+                "Or type 'bye' to exit.")
 
-print("Chatbot: Hi! I'm a simple chatbot, I'm here to assist you!")
-
-memory = {}
+# Main Program
+print("\nChatbot: Hi! I'm your Python chatbot.")
+print("Type 'bye' to exit.\n")
 
 while True:
-    user_input = input("Me: ")  
-    if user_input.lower() == 'bye':
-        print(f"Chatbot: Goodbye, {memory.get('name', 'friend')}! Have a great day!")
-        break  
-    
-    response = chatbot(user_input, memory)  
-    print("Chatbot:", response) # type: ignore
+    user_input = input("You: ")
+
+    response = chatbot(user_input, memory)
+    print("Bot:", response)
+
+    if user_input.lower().strip() in ["bye", "exit", "quit"]:
+        break
